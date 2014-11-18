@@ -1,0 +1,48 @@
+#!/bin/bash
+# description: Config realserver lo and apply noarp
+
+. /etc/rc.d/init.d/functions
+
+case "$1" in
+start)
+       <% @vip_and_netif.each do |vip, netif|  %>
+       ifconfig <%= netif%> <%= vip%> broadcast <%= vip%> netmask 255.255.255.255
+       <% end %>
+       echo "1" >/proc/sys/net/ipv4/conf/lo/arp_ignore
+       echo "2" >/proc/sys/net/ipv4/conf/lo/arp_announce
+       echo "1" >/proc/sys/net/ipv4/conf/all/arp_ignore
+       echo "2" >/proc/sys/net/ipv4/conf/all/arp_announce
+       sysctl -p >/dev/null 2>&1
+       echo "RealServer Start OK"
+       ;;
+stop)
+       <%  @vip_and_netif.each do |vip, netif|  %>
+        ifconfig <%= netif%> down
+       <% end %>
+       echo "0" >/proc/sys/net/ipv4/conf/lo/arp_ignore
+       echo "0" >/proc/sys/net/ipv4/conf/lo/arp_announce
+       echo "0" >/proc/sys/net/ipv4/conf/all/arp_ignore
+       echo "0" >/proc/sys/net/ipv4/conf/all/arp_announce
+       echo "RealServer Stoped"
+       ;;
+status)
+        <%  @vip_and_netif.each do |vip, netif|  %>
+        # Status of LVS-DR real server.
+        islothere=`/sbin/ifconfig <%= netif%> | grep <%= vip%>`
+        isrothere=`netstat -rn | grep <%= netif%> | grep <%= vip%>`
+        if [ ! "$islothere" -o ! "isrothere" ];then
+            # Either the route or the lo:0 device
+            # not found.
+            echo "VIP: <%= vip%> real server Stopped."
+        else
+            echo "VIP: <%= vip%> real server Running."
+        fi
+       <% end %>
+;;
+*)
+        # Invalid entry.
+        echo "$0: Usage: $0 {start|status|stop}"
+        exit 1
+;;
+esac
+exit 0
