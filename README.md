@@ -19,4 +19,4 @@ end
 ```
 3. Append this cookbook into run_list. It will generate ```/usr/local/sbin/viprs```.
 
-4. Run the cookbook [cookbook-keepalived-director](https://github.com/sbbird/cookbook-keepalived-director) on the directors. 
+4. Run the default recipes of cookbook [cookbook-keepalived-director](https://github.com/sbbird/cookbook-keepalived-director) on the directors. 
