@@ -11,9 +11,10 @@ depends          'mon-lvs-realserver', '= 1.0.0'
 
 ```ruby 
 config_rs "name_of_your_service" do
-    vip_and_netif ({virtual_paddress => 'lo:0'})
+    vip_and_netif ({virtual_paddress => 'lo:0', virtual_paddress2 => 'lo:1'})
     vip_configs [{'vip' => virtual_paddress, 'vport'=>virtual_port1, 'rport'=>real_port1,'weight'=>'100'},
-                {'vip' => virtual_paddress, 'vport'=>virtual_port2, 'rport'=>real_port2,'weight'=>'100'}                
+                {'vip' => virtual_paddress, 'vport'=>virtual_port2, 'rport'=>real_port2,'weight'=>'100'},
+                 {'vip' => virtual_paddress2, 'vport'=>virtual_port3, 'rport'=>real_port3,'weight'=>'100'} 
                 ]
 end
 ```
